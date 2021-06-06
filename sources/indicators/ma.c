@@ -12,7 +12,7 @@ extern size_t *g_chart_data_length;
 TL_STATUS TL_ma(TL_CHART chart, TL_OHLC ohlc_type, unsigned int period, double *output)
 {
     if (!output)
-        return (TL_E_NULL_BUFFER);
+        return (TL_E_NULL_POINTER);
     if (!period)
         return (TL_E_BAD_MA_PERIOD);
     if (chart < 0 || chart >= g_total_charts_allocated || g_chart[chart] == -1)

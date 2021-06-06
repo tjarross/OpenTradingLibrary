@@ -12,6 +12,7 @@
 
 LIB =		ta_lib.a
 SRC =		sources/indicators/ma.c \
+			sources/indicators/sma.c \
 			sources/init.c \
 
 OBJ =		$(SRC:%.c=%.o)

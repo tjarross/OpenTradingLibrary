@@ -8,7 +8,7 @@
 typedef enum e_TL_STATUS
 {
     TL_SUCCESS = 0,
-    TL_E_NULL_BUFFER = 1,
+    TL_E_NULL_POINTER = 1,
     TL_E_BAD_ELEM_SIZE = 2,
     TL_E_BAD_CHART_LENGTH = 3,
     TL_E_BAD_CHART = 4,
@@ -29,5 +29,6 @@ TL_STATUS TL_release_chart(TL_CHART chart);
 void TL_terminate(void);
 
 TL_STATUS TL_ma(TL_CHART chart, TL_OHLC ohlc_type, unsigned int period, double *output);
+TL_STATUS TL_sma(const double *array, unsigned int length, double *output);
 
 #endif

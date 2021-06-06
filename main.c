@@ -16,10 +16,13 @@ int main(void)
     chart = TL_create_chart(data_length, TL_DOUBLE, &status);
     status = TL_chart_add_data(chart, data, TL_CLOSE);
     status = TL_ma(chart, TL_CLOSE, data_length, out);
-
     for (int i = 0; i < data_length; ++i)
         printf("%lf, ", out[i]);
     printf("\n");
+
+    double sma;
+    TL_sma(data, data_length - 1, &sma);
+    printf("sma() = %lf\n", sma);
 
     TL_release_chart(chart);
     TL_terminate();
