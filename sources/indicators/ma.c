@@ -15,7 +15,7 @@ TL_STATUS TL_ma(TL_CHART chart, TL_OHLC ohlc_type, unsigned int period, double *
         return (TL_E_NULL_BUFFER);
     if (!period)
         return (TL_E_BAD_MA_PERIOD);
-    if (chart < 0 || chart >= g_total_charts_allocated)
+    if (chart < 0 || chart >= g_total_charts_allocated || g_chart[chart] == -1)
         return (TL_E_BAD_CHART);
 
     unsigned int i = 0;
