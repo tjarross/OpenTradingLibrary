@@ -2,45 +2,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main()
+int main(void)
 {
     TL_STATUS status;
-    TL_CHART cchart;
-    int chart[] =
-        {
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-        };
-    double *out = malloc(sizeof(double) * 10);
+    TL_CHART chart;
+    double data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    size_t data_length = sizeof(data) / sizeof(*data);
+    double *out = malloc(sizeof(double) * data_length);
 
     if (TL_SUCCESS != TL_init())
         return (EXIT_FAILURE);
 
-    cchart = TL_create_chart(10, TL_INT, &status);
-    if (status)
-        return (EXIT_FAILURE);
-    status = TL_chart_add_data(cchart, chart, TL_CLOSE);
-    if (status)
-        return (EXIT_FAILURE);
+    chart = TL_create_chart(data_length, TL_DOUBLE, &status);
+    status = TL_chart_add_data(chart, data, TL_CLOSE);
+    status = TL_ma(chart, TL_CLOSE, data_length, out);
 
-    status = TL_ma(cchart, TL_CLOSE, 3, out);
-    if (status)
-        return (EXIT_FAILURE);
-
-    for (int i = 0; i < 10; ++i)
-    {
+    for (int i = 0; i < data_length; ++i)
         printf("%lf, ", out[i]);
-    }
     printf("\n");
 
+    TL_release_chart(chart);
     TL_terminate();
     return (EXIT_SUCCESS);
 }

@@ -220,7 +220,7 @@ TL_CHART TL_create_chart(size_t length, TL_DATA_TYPE data_type, TL_STATUS *err)
 
     if (err)
         *err = TL_SUCCESS;
-    return (g_last_chart_nb++);
+    return (free_index);
 }
 
 TL_STATUS TL_release_chart(TL_CHART chart)
