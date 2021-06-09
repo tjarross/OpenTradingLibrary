@@ -10,46 +10,41 @@
 #                                                                              #
 # **************************************************************************** #
 
-LIB =		ta_lib.a
-SRC =		sources/indicators/ma.c \
-			sources/indicators/sma.c \
-			sources/init.c \
+EXEC =		test_ta_lib
+SRC =		sources/main.c \
+			sources/test_TL_init.c \
+			sources/test_TL_terminate.c \
+			sources/test_TL_create_chart.c \
 
 OBJ =		$(SRC:%.c=%.o)
-INC =		-I includes/
-CC =		gcc
-FLAGS =		-O3 -Wall -Wextra
+INC =		-I includes/ \
+			-I ../includes/ \
 
-all: $(LIB)
+CC =		gcc
+FLAGS =		-g -Wall -Wextra
+
+all: $(EXEC)
 
 msg:
-	@echo "\033[0;29m⌛  Making Library : \c"
+	@echo "\033[0;29m⌛  Making Tests : \c"
 
-$(LIB): msg $(OBJ)
+$(EXEC): msg $(OBJ)
 	@echo ""
-	@ar rcs $(LIB) $(OBJ)
-	@ranlib $(LIB)
+	@gcc -o $(EXEC) $(OBJ) ../ta_lib.a
 	@echo "\033[0;34m✅  Executable created !\033[0;29m"
-
-tests:
-	@make
-	@make -C tests
-	@./tests/test_ta_lib
 
 sources/%.o: sources/%.c
 	@$(CC) $(FLAGS) -o $@ -c $< $(INC)
 	@echo "\033[0;32m.\c\033[0;29m"
 
 clean:
-	@echo "\033[0;31m🔥  Cleaning Library Objects...\033[0;29m"
+	@echo "\033[0;31m🔥  Cleaning Tests Objects...\033[0;29m"
 	@rm -rf $(OBJ)
-	@make clean -C tests
 
 fclean: clean
-	@echo "\033[0;31m🔥  Cleaning Library Executable...\033[0;29m"
-	@rm -rf $(LIB)
-	@make fclean -C tests
+	@echo "\033[0;31m🔥  Cleaning Tests Executable...\033[0;29m"
+	@rm -rf $(EXEC)
 
 re: fclean all
 
-.PHONY: all clean fclean re msg tests
+.PHONY: all clean fclean re msg

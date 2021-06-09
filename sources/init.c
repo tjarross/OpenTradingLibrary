@@ -4,23 +4,20 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#define BATCH_CHART 128
-
 static int g_init = 0;
+static int g_last_chart_nb = 0;
 int g_total_charts_allocated = 0;
 TL_CHART *g_chart = NULL;
 TL_CHART_DATA **g_chart_data = NULL;
-TL_DATA_TYPE *g_chart_data_type = NULL;
 size_t *g_chart_data_length = NULL;
 
 static void realloc_charts(int new_length)
 {
     assert(new_length);
     // Realloc charts
-    assert(realloc(g_chart, sizeof(*g_chart) * new_length));
-    assert(realloc(g_chart_data, sizeof(*g_chart_data) * new_length));
-    assert(realloc(g_chart_data_length, sizeof(*g_chart_data_length) * new_length));
-    assert(realloc(g_chart_data_type, sizeof(*g_chart_data_type) * new_length));
+    assert((g_chart = realloc(g_chart, sizeof(*g_chart) * new_length)));
+    assert((g_chart_data = realloc(g_chart_data, sizeof(*g_chart_data) * new_length)));
+    assert((g_chart_data_length = realloc(g_chart_data_length, sizeof(*g_chart_data_length) * new_length)));
 
     // Init to default values if new allocations
     if (new_length > g_total_charts_allocated)
@@ -30,7 +27,6 @@ static void realloc_charts(int new_length)
             g_chart[i] = -1;
             g_chart_data[i] = NULL;
             g_chart_data_length[i] = 0;
-            g_chart_data_type = TL_NO_DATA_TYPE;
         }
     }
 
@@ -56,9 +52,7 @@ void TL_terminate(void)
     free(g_chart_data);
     g_chart_data = NULL;
 
-    // Charts types
-    free(g_chart_data_type);
-    g_chart_data = NULL;
+    g_total_charts_allocated = 0;
 
     g_init = 0;
 }
@@ -68,6 +62,7 @@ TL_STATUS TL_init(void)
     if (g_init)
         return (TL_W_LIB_ALREADY_INIT);
 
+    g_last_chart_nb = 0;
     g_total_charts_allocated = BATCH_CHART;
 
     // Charts indexes
@@ -92,25 +87,12 @@ TL_STATUS TL_init(void)
         return (TL_E_MALLOC_FAIL);
     }
 
-    // Charts data types
-    if (NULL == (g_chart_data_type = (TL_DATA_TYPE *)malloc(sizeof(*g_chart_data_type) * g_total_charts_allocated)))
-    {
-        free(g_chart);
-        g_chart = NULL;
-        free(g_chart_data_length);
-        g_chart_data_length = NULL;
-        free(g_chart_data);
-        g_chart_data = NULL;
-        return (TL_E_MALLOC_FAIL);
-    }
-
     // Init default values
     for (int i = 0; i < g_total_charts_allocated; ++i)
     {
         g_chart[i] = -1;
         g_chart_data[i] = NULL;
         g_chart_data_length[i] = 0;
-        g_chart_data_type[i] = TL_NO_DATA_TYPE;
     }
 
     g_init = 1;
@@ -143,7 +125,8 @@ static double extract_value(const void *data, unsigned int index, TL_DATA_TYPE d
     assert(0);
 }
 
-TL_STATUS TL_chart_add_data(TL_CHART chart, const void *data, TL_OHLC ohlc_type)
+// TODO: handling chart offset parameter
+TL_STATUS TL_chart_add_data(TL_CHART chart, const void *data, TL_DATA_TYPE data_type, TL_OHLC ohlc_type)
 {
     if (g_init == 0)
         return (TL_E_LIB_NOT_INITIALIZED);
@@ -154,8 +137,12 @@ TL_STATUS TL_chart_add_data(TL_CHART chart, const void *data, TL_OHLC ohlc_type)
         status = TL_E_BAD_CHART;
     if (g_chart[chart] == -1)
         status = TL_E_BAD_CHART;
+    if (!data)
+        status = TL_E_NULL_POINTER;
     if (ohlc_type <= TL_NO_OHLC || ohlc_type >= TL_OHLC_MAX)
         status = TL_E_BAD_OHLC_TYPE;
+    if (data_type <= TL_NO_DATA_TYPE || data_type >= TL_DATA_TYPE_MAX)
+        status = TL_E_BAD_DATA_TYPE;
 
     if (status != TL_SUCCESS)
         return (status);
@@ -166,37 +153,38 @@ TL_STATUS TL_chart_add_data(TL_CHART chart, const void *data, TL_OHLC ohlc_type)
     for (unsigned int i = 0; i < g_chart_data_length[chart]; ++i)
     {
         if (ohlc_type == TL_OPEN)
-            g_chart_data[chart][i].open = extract_value(data, i, g_chart_data_type[chart]);
+            g_chart_data[chart][i].open = extract_value(data, i, data_type);
         if (ohlc_type == TL_HIGH)
-            g_chart_data[chart][i].high = extract_value(data, i, g_chart_data_type[chart]);
+            g_chart_data[chart][i].high = extract_value(data, i, data_type);
         if (ohlc_type == TL_LOW)
-            g_chart_data[chart][i].low = extract_value(data, i, g_chart_data_type[chart]);
+            g_chart_data[chart][i].low = extract_value(data, i, data_type);
         if (ohlc_type == TL_CLOSE)
-            g_chart_data[chart][i].close = extract_value(data, i, g_chart_data_type[chart]);
+            g_chart_data[chart][i].close = extract_value(data, i, data_type);
         if (ohlc_type == TL_VOLUME)
-            g_chart_data[chart][i].volume = extract_value(data, i, g_chart_data_type[chart]);
+            g_chart_data[chart][i].volume = extract_value(data, i, data_type);
     }
     return (TL_SUCCESS);
 }
 
-TL_CHART TL_create_chart(size_t length, TL_DATA_TYPE data_type, TL_STATUS *err)
+TL_CHART TL_create_chart(size_t length, TL_STATUS *status)
 {
     if (g_init == 0)
-        return (TL_E_LIB_NOT_INITIALIZED);
+    {
+        if (status)
+            *status = TL_E_LIB_NOT_INITIALIZED;
+        return (-1);
+    }
 
-    static int g_last_chart_nb = 0;
-    TL_STATUS status = TL_SUCCESS;
+    TL_STATUS err = TL_SUCCESS;
 
     // Checks
     if (!length)
-        status = TL_E_BAD_CHART_LENGTH;
-    if (data_type <= TL_NO_DATA_TYPE || data_type >= TL_DATA_TYPE_MAX)
-        status = TL_E_BAD_DATA_TYPE;
+        err = TL_E_BAD_CHART_LENGTH;
 
-    if (status != TL_SUCCESS)
+    if (err != TL_SUCCESS)
     {
-        if (err)
-            *err = status;
+        if (status)
+            *status = err;
         return (-1);
     }
 
@@ -211,15 +199,12 @@ TL_CHART TL_create_chart(size_t length, TL_DATA_TYPE data_type, TL_STATUS *err)
 
     // Creating new chart and allocating if necessary
     if (length > g_chart_data_length[free_index])
-        assert(realloc(g_chart_data[free_index], sizeof(**g_chart_data) * length));
+        assert((g_chart_data[free_index] = realloc(g_chart_data[free_index], sizeof(**g_chart_data) * length)));
     g_chart_data_length[free_index] = length;
-    g_chart[free_index] = g_last_chart_nb + 1;
+    g_chart[free_index] = ++g_last_chart_nb;
 
-    // Set input data type
-    g_chart_data_type[free_index] = data_type;
-
-    if (err)
-        *err = TL_SUCCESS;
+    if (status)
+        *status = TL_SUCCESS;
     return (free_index);
 }
 

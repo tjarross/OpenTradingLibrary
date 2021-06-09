@@ -5,6 +5,8 @@
 
 #include "chart_storage.h"
 
+#define BATCH_CHART 128
+
 typedef enum e_TL_STATUS
 {
     TL_SUCCESS = 0,
@@ -23,8 +25,8 @@ typedef enum e_TL_STATUS
 typedef int TL_CHART;
 
 TL_STATUS TL_init(void);
-TL_CHART TL_create_chart(size_t length, TL_DATA_TYPE data_type, TL_STATUS *err);
-TL_STATUS TL_chart_add_data(TL_CHART chart, const void *data, TL_OHLC ohlc_type);
+TL_CHART TL_create_chart(size_t length, TL_STATUS *status);
+TL_STATUS TL_chart_add_data(TL_CHART chart, const void *data, TL_DATA_TYPE data_type, TL_OHLC ohlc_type);
 TL_STATUS TL_release_chart(TL_CHART chart);
 void TL_terminate(void);
 
