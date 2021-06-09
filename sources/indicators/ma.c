@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "ta_lib.h"
+#include "TL.h"
 #include "chart_storage.h"
 
 extern int g_total_charts_allocated;

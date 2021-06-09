@@ -1,5 +1,5 @@
-#ifndef TA_LIB_H
-#define TA_LIB_H
+#ifndef TL_H
+#define TL_H
 
 #include <stdlib.h>
 

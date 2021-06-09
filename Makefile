@@ -22,7 +22,7 @@ $(LIB): msg $(OBJ)
 tests:
 	@make
 	@make -C tests
-	@./tests/test_ta_lib
+	@./tests/test_TL
 
 sources/%.o: sources/%.c
 	@$(CC) $(FLAGS) -o $@ -c $< $(INC)

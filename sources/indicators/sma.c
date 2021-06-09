@@ -1,4 +1,4 @@
-#include "ta_lib.h"
+#include "TL.h"
 
 TL_STATUS TL_sma(const double *array, unsigned int length, double *output)
 {

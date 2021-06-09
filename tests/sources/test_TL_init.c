@@ -1,4 +1,4 @@
-#include "ta_lib.h"
+#include "TL.h"
 
 extern int g_total_charts_allocated;
 extern TL_CHART *g_chart;

@@ -1,4 +1,4 @@
-EXEC =		test_ta_lib
+EXEC =		test_TL
 SRC =		sources/main.c \
 			sources/test_TL_init.c \
 			sources/test_TL_terminate.c \
