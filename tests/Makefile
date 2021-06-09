@@ -18,7 +18,7 @@ msg:
 
 $(EXEC): msg $(OBJ)
 	@echo ""
-	@gcc -o $(EXEC) $(OBJ) ../ta_lib.a
+	@gcc -o $(EXEC) $(OBJ) ../TL.a
 	@echo "\033[0;34m✅  Executable created !\033[0;29m"
 
 sources/%.o: sources/%.c

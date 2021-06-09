@@ -1,4 +1,4 @@
-LIB =		ta_lib.a
+LIB =		TL.a
 SRC =		sources/indicators/ma.c \
 			sources/indicators/sma.c \
 			sources/init.c \
