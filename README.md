@@ -1,4 +1,4 @@
-# TradingAnalysis
+# OpenTradingLibrary
 
 A C library for your trading analysis
 
