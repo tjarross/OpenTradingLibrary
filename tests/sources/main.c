@@ -18,5 +18,8 @@ int main(void)
 
     result = test_TL_create_chart(&status);
     printf("test_TL_create_chart(): %s (%d)\n", (result == 0 ? "OK" : "NOK"), result);
+
+    result = test_TL_release_chart(&status);
+    printf("test_TL_release_chart(): %s (%d)\n", (result == 0 ? "OK" : "NOK"), result);
     return (EXIT_SUCCESS);
 }

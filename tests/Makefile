@@ -3,6 +3,7 @@ SRC =		sources/main.c \
 			sources/test_TL_init.c \
 			sources/test_TL_terminate.c \
 			sources/test_TL_create_chart.c \
+			sources/test_TL_release_chart.c \
 
 OBJ =		$(SRC:%.c=%.o)
 INC =		-I includes/ \
