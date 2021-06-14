@@ -15,6 +15,7 @@ Go to the cloned folder and compile the library:
 `$ make`
 
 This creates a static library called `TL.a`.
+
 Include the file `TL.h` to your source code.
 Link it with the static library generated before.
 
