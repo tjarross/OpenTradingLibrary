@@ -9,7 +9,7 @@ static int g_last_chart_nb = 0;
 int g_total_charts_allocated = 0;
 TL_CHART *g_chart = NULL;
 TL_CHART_DATA **g_chart_data = NULL;
-size_t *g_chart_data_length = NULL;
+unsigned int *g_chart_data_length = NULL;
 
 static void realloc_charts(int new_length)
 {
@@ -125,7 +125,6 @@ static double extract_value(const void *data, unsigned int index, TL_DATA_TYPE d
     assert(0);
 }
 
-// TODO: handling chart offset parameter
 TL_STATUS TL_chart_add_data(TL_CHART chart, const void *data, TL_DATA_TYPE data_type, TL_OHLC ohlc_type)
 {
     if (g_init == 0)
@@ -147,9 +146,6 @@ TL_STATUS TL_chart_add_data(TL_CHART chart, const void *data, TL_DATA_TYPE data_
     if (status != TL_SUCCESS)
         return (status);
 
-    if (NULL == (g_chart_data[chart] = (TL_CHART_DATA *)malloc(sizeof(**g_chart_data) * g_chart_data_length[chart])))
-        return (TL_E_MALLOC_FAIL);
-
     for (unsigned int i = 0; i < g_chart_data_length[chart]; ++i)
     {
         if (ohlc_type == TL_OPEN)
@@ -166,7 +162,7 @@ TL_STATUS TL_chart_add_data(TL_CHART chart, const void *data, TL_DATA_TYPE data_
     return (TL_SUCCESS);
 }
 
-TL_CHART TL_create_chart(size_t length, TL_STATUS *status)
+TL_CHART TL_create_chart(unsigned int length, TL_STATUS *status)
 {
     if (g_init == 0)
     {

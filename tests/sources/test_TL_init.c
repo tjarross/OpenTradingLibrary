@@ -3,7 +3,7 @@
 extern int g_total_charts_allocated;
 extern TL_CHART *g_chart;
 extern TL_CHART_DATA **g_chart_data;
-extern size_t *g_chart_data_length;
+extern unsigned int *g_chart_data_length;
 
 int test_TL_init(void)
 {

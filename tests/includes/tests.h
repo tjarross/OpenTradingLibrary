@@ -6,6 +6,7 @@
 int test_TL_init(void);
 int test_TL_terminate(void);
 int test_TL_create_chart(TL_STATUS *status);
+int test_TL_chart_add_data(TL_STATUS *status);
 int test_TL_release_chart(TL_STATUS *status);
 
 #endif
