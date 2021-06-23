@@ -6,7 +6,6 @@
 
 extern int g_total_charts_allocated;
 extern TL_CHART *g_chart;
-extern TL_CHART_DATA *g_chart_data;
 extern unsigned int *g_chart_data_length;
 
 TL_STATUS TL_ma(TL_CHART chart, TL_OHLC ohlc_type, unsigned int period, double *output)
