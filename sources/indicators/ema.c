@@ -21,9 +21,9 @@ TL_STATUS TL_ema(TL_CHART chart, TL_OHLC ohlc_type, unsigned int period, unsigne
     if (period == 0)
         return (TL_E_BAD_MA_PERIOD);
 
-    if (length < (size_t)period)
+    if (length < period)
     {
-        for (size_t i = 0; i < length; ++i)
+        for (unsigned int i = 0; i < length; ++i)
             output[i] = NAN;
         return (TL_SUCCESS);
     }

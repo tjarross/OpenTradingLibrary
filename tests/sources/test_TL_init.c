@@ -1,5 +1,7 @@
 #include "TL.h"
 
+#include <stdlib.h>
+
 extern int g_total_charts_allocated;
 extern TL_CHART *g_chart;
 extern TL_CHART_DATA *g_chart_data;

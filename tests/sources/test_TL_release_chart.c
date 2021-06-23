@@ -1,5 +1,7 @@
 #include "TL.h"
 
+#include <stdlib.h>
+
 extern TL_CHART *g_chart;
 
 int test_TL_release_chart(TL_STATUS *status)
