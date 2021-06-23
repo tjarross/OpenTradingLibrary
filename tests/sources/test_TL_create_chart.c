@@ -4,8 +4,13 @@
 
 extern int g_total_charts_allocated;
 extern TL_CHART *g_chart;
-extern TL_CHART_DATA **g_chart_data;
+extern TL_CHART_DATA *g_chart_data;
 extern unsigned int *g_chart_data_length;
+
+static int is_valid_data(TL_CHART_DATA data)
+{
+    return (data.open != NULL && data.high != NULL && data.low != NULL && data.close != NULL && data.volume != NULL);
+}
 
 int test_TL_create_chart(TL_STATUS *status)
 {
@@ -38,16 +43,16 @@ int test_TL_create_chart(TL_STATUS *status)
     chart = TL_create_chart(10, status);
     if (chart != 0 || *status != TL_SUCCESS)
         return (5);
-    if (g_chart[0] == -1 || g_chart_data[0] == NULL || g_chart_data_length[0] != 10)
+    if (g_chart[0] == -1 || is_valid_data(g_chart_data[0]) != 1 || g_chart_data_length[0] != 10)
         return (6);
 
     // Normal use 2nd chart
     chart = TL_create_chart(15, status);
     if (chart != 1 || *status != TL_SUCCESS)
         return (7);
-    if (g_chart[0] != 1 || g_chart_data[0] == NULL || g_chart_data_length[0] != 10)
+    if (g_chart[0] != 1 || is_valid_data(g_chart_data[0]) != 1 || g_chart_data_length[0] != 10)
         return (8);
-    if (g_chart[1] != 2 || g_chart_data[1] == NULL || g_chart_data_length[1] != 15)
+    if (g_chart[1] != 2 || is_valid_data(g_chart_data[1]) != 1 || g_chart_data_length[1] != 15)
         return (9);
 
     TL_release_chart(1);
@@ -56,9 +61,9 @@ int test_TL_create_chart(TL_STATUS *status)
     chart = TL_create_chart(5, status);
     if (chart != 1 || *status != TL_SUCCESS)
         return (10);
-    if (g_chart[0] != 1 || g_chart_data[0] == NULL || g_chart_data_length[0] != 10)
+    if (g_chart[0] != 1 || is_valid_data(g_chart_data[0]) != 1 || g_chart_data_length[0] != 10)
         return (11);
-    if (g_chart[1] != 3 || g_chart_data[1] == NULL || g_chart_data_length[1] != 5)
+    if (g_chart[1] != 3 || is_valid_data(g_chart_data[1]) != 1 || g_chart_data_length[1] != 5)
         return (12);
 
     TL_release_chart(0);
@@ -67,9 +72,9 @@ int test_TL_create_chart(TL_STATUS *status)
     chart = TL_create_chart(7, status);
     if (chart != 0 || *status != TL_SUCCESS)
         return (13);
-    if (g_chart[0] != 4 || g_chart_data[0] == NULL || g_chart_data_length[0] != 7)
+    if (g_chart[0] != 4 || is_valid_data(g_chart_data[0]) != 1 || g_chart_data_length[0] != 7)
         return (14);
-    if (g_chart[1] != 3 || g_chart_data[1] == NULL || g_chart_data_length[1] != 5)
+    if (g_chart[1] != 3 || is_valid_data(g_chart_data[1]) != 1 || g_chart_data_length[1] != 5)
         return (15);
 
     TL_release_chart(1);

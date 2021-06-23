@@ -5,7 +5,7 @@
 
 #define NB_ELEM(x) (sizeof((x)) / sizeof(*(x)))
 
-extern TL_CHART_DATA **g_chart_data;
+extern TL_CHART_DATA *g_chart_data;
 
 int test_TL_chart_add_data(TL_STATUS *status)
 {
@@ -56,31 +56,31 @@ int test_TL_chart_add_data(TL_STATUS *status)
     if (*status != TL_SUCCESS)
         return (9);
     for (size_t i = 0; i < NB_ELEM(odata); ++i)
-        if (g_chart_data[chart][i].open != odata[i])
+        if (g_chart_data[chart].open[i] != odata[i])
             return (10);
     *status = TL_chart_add_data(chart, hdata, TL_INT, TL_HIGH);
     if (*status != TL_SUCCESS)
         return (11);
     for (size_t i = 0; i < NB_ELEM(hdata); ++i)
-        if (g_chart_data[chart][i].high != hdata[i])
+        if (g_chart_data[chart].high[i] != hdata[i])
             return (12);
     *status = TL_chart_add_data(chart, ldata, TL_INT, TL_LOW);
     if (*status != TL_SUCCESS)
         return (13);
     for (size_t i = 0; i < NB_ELEM(ldata); ++i)
-        if (g_chart_data[chart][i].low != ldata[i])
+        if (g_chart_data[chart].low[i] != ldata[i])
             return (14);
     *status = TL_chart_add_data(chart, cdata, TL_INT, TL_CLOSE);
     if (*status != TL_SUCCESS)
         return (15);
     for (size_t i = 0; i < NB_ELEM(cdata); ++i)
-        if (g_chart_data[chart][i].close != cdata[i])
+        if (g_chart_data[chart].close[i] != cdata[i])
             return (16);
     *status = TL_chart_add_data(chart, vdata, TL_INT, TL_VOLUME);
     if (*status != TL_SUCCESS)
         return (15);
     for (size_t i = 0; i < NB_ELEM(vdata); ++i)
-        if (g_chart_data[chart][i].volume != vdata[i])
+        if (g_chart_data[chart].volume[i] != vdata[i])
             return (17);
 
     // Decimal test
@@ -89,19 +89,16 @@ int test_TL_chart_add_data(TL_STATUS *status)
     if (*status != TL_SUCCESS)
         return (18);
     for (size_t i = 0; i < NB_ELEM(double_data); ++i)
-        if (g_chart_data[double_chart][i].close != double_data[i])
+        if (g_chart_data[double_chart].close[i] != double_data[i])
             return (19);
 
     // Replacing data in chart
     int new_data[] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
-    TL_CHART_DATA *p = g_chart_data[chart];
     *status = TL_chart_add_data(chart, new_data, TL_INT, TL_CLOSE);
     if (*status != TL_SUCCESS)
         return (20);
-    if (p != g_chart_data[chart])
-        return (21);
     for (size_t i = 0; i < NB_ELEM(cdata); ++i)
-        if (g_chart_data[chart][i].close != new_data[i])
+        if (g_chart_data[chart].close[i] != new_data[i])
             return (22);
 
     TL_terminate();

@@ -6,7 +6,7 @@
 
 extern int g_total_charts_allocated;
 extern TL_CHART *g_chart;
-extern TL_CHART_DATA **g_chart_data;
+extern TL_CHART_DATA *g_chart_data;
 extern unsigned int *g_chart_data_length;
 
 TL_STATUS TL_ma(TL_CHART chart, TL_OHLC ohlc_type, unsigned int period, double *output)
@@ -19,6 +19,7 @@ TL_STATUS TL_ma(TL_CHART chart, TL_OHLC ohlc_type, unsigned int period, double *
         return (TL_E_BAD_CHART);
 
     unsigned int i = 0;
+    double *ohlc_ptr = get_ptr_from_ohlc(chart, ohlc_type);
 
     for (; i < period - 1 && i < g_chart_data_length[chart]; ++i)
         output[i] = NAN;
@@ -28,16 +29,7 @@ TL_STATUS TL_ma(TL_CHART chart, TL_OHLC ohlc_type, unsigned int period, double *
         output[i] = 0.0;
         for (int j = i; j >= (int)(i - (period - 1)); --j)
         {
-            if (ohlc_type == TL_OPEN)
-                output[i] += g_chart_data[chart][j].open;
-            if (ohlc_type == TL_HIGH)
-                output[i] += g_chart_data[chart][j].high;
-            if (ohlc_type == TL_LOW)
-                output[i] += g_chart_data[chart][j].low;
-            if (ohlc_type == TL_CLOSE)
-                output[i] += g_chart_data[chart][j].close;
-            if (ohlc_type == TL_VOLUME)
-                output[i] += g_chart_data[chart][j].volume;
+            output[i] += ohlc_ptr[j];
         }
         output[i] /= (double)period;
     }

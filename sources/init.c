@@ -8,8 +8,13 @@ static int g_init = 0;
 static int g_last_chart_nb = 0;
 int g_total_charts_allocated = 0;
 TL_CHART *g_chart = NULL;
-TL_CHART_DATA **g_chart_data = NULL;
+TL_CHART_DATA *g_chart_data = NULL;
 unsigned int *g_chart_data_length = NULL;
+
+void *get_ptr_from_ohlc(TL_CHART chart, TL_OHLC ohlc_type)
+{
+    return (*(double **)((char *)(g_chart_data + chart) + (sizeof(double) * (ohlc_type - 1))));
+}
 
 static void realloc_charts(int new_length)
 {
@@ -25,7 +30,11 @@ static void realloc_charts(int new_length)
         for (int i = g_total_charts_allocated; i < new_length; ++i)
         {
             g_chart[i] = -1;
-            g_chart_data[i] = NULL;
+            g_chart_data[i].open = NULL;
+            g_chart_data[i].high = NULL;
+            g_chart_data[i].low = NULL;
+            g_chart_data[i].close = NULL;
+            g_chart_data[i].volume = NULL;
             g_chart_data_length[i] = 0;
         }
     }
@@ -48,7 +57,13 @@ void TL_terminate(void)
 
     // Charts data
     for (int i = 0; i < g_total_charts_allocated; ++i)
-        free(g_chart_data[i]);
+    {
+        free(g_chart_data[i].open);
+        free(g_chart_data[i].high);
+        free(g_chart_data[i].low);
+        free(g_chart_data[i].close);
+        free(g_chart_data[i].volume);
+    }
     free(g_chart_data);
     g_chart_data = NULL;
 
@@ -70,7 +85,7 @@ TL_STATUS TL_init(void)
         return (TL_E_MALLOC_FAIL);
 
     // Charts lengths
-    if (NULL == (g_chart_data_length = (size_t *)malloc(sizeof(*g_chart_data_length) * g_total_charts_allocated)))
+    if (NULL == (g_chart_data_length = (unsigned int *)malloc(sizeof(*g_chart_data_length) * g_total_charts_allocated)))
     {
         free(g_chart);
         g_chart = NULL;
@@ -78,7 +93,7 @@ TL_STATUS TL_init(void)
     }
 
     // Charts data
-    if (NULL == (g_chart_data = (TL_CHART_DATA **)malloc(sizeof(*g_chart_data) * g_total_charts_allocated)))
+    if (NULL == (g_chart_data = (TL_CHART_DATA *)malloc(sizeof(*g_chart_data) * g_total_charts_allocated)))
     {
         free(g_chart);
         g_chart = NULL;
@@ -91,7 +106,11 @@ TL_STATUS TL_init(void)
     for (int i = 0; i < g_total_charts_allocated; ++i)
     {
         g_chart[i] = -1;
-        g_chart_data[i] = NULL;
+        g_chart_data[i].open = NULL;
+        g_chart_data[i].high = NULL;
+        g_chart_data[i].low = NULL;
+        g_chart_data[i].close = NULL;
+        g_chart_data[i].volume = NULL;
         g_chart_data_length[i] = 0;
     }
 
@@ -127,6 +146,8 @@ static double extract_value(const void *data, unsigned int index, TL_DATA_TYPE d
 
 TL_STATUS TL_chart_add_data(TL_CHART chart, const void *data, TL_DATA_TYPE data_type, TL_OHLC ohlc_type)
 {
+    double *ohlc_ptr;
+
     if (g_init == 0)
         return (TL_E_LIB_NOT_INITIALIZED);
 
@@ -146,18 +167,11 @@ TL_STATUS TL_chart_add_data(TL_CHART chart, const void *data, TL_DATA_TYPE data_
     if (status != TL_SUCCESS)
         return (status);
 
+    ohlc_ptr = get_ptr_from_ohlc(chart, ohlc_type);
+
     for (unsigned int i = 0; i < g_chart_data_length[chart]; ++i)
     {
-        if (ohlc_type == TL_OPEN)
-            g_chart_data[chart][i].open = extract_value(data, i, data_type);
-        if (ohlc_type == TL_HIGH)
-            g_chart_data[chart][i].high = extract_value(data, i, data_type);
-        if (ohlc_type == TL_LOW)
-            g_chart_data[chart][i].low = extract_value(data, i, data_type);
-        if (ohlc_type == TL_CLOSE)
-            g_chart_data[chart][i].close = extract_value(data, i, data_type);
-        if (ohlc_type == TL_VOLUME)
-            g_chart_data[chart][i].volume = extract_value(data, i, data_type);
+        ohlc_ptr[i] = extract_value(data, i, data_type);
     }
     return (TL_SUCCESS);
 }
@@ -195,7 +209,13 @@ TL_CHART TL_create_chart(unsigned int length, TL_STATUS *status)
 
     // Creating new chart and allocating if necessary
     if (length > g_chart_data_length[free_index])
-        assert((g_chart_data[free_index] = realloc(g_chart_data[free_index], sizeof(**g_chart_data) * length)));
+    {
+        assert((g_chart_data[free_index].open = realloc(g_chart_data[free_index].open, sizeof(*g_chart_data) * length)));
+        assert((g_chart_data[free_index].high = realloc(g_chart_data[free_index].high, sizeof(*g_chart_data) * length)));
+        assert((g_chart_data[free_index].low = realloc(g_chart_data[free_index].low, sizeof(*g_chart_data) * length)));
+        assert((g_chart_data[free_index].close = realloc(g_chart_data[free_index].close, sizeof(*g_chart_data) * length)));
+        assert((g_chart_data[free_index].volume = realloc(g_chart_data[free_index].volume, sizeof(*g_chart_data) * length)));
+    }
     g_chart_data_length[free_index] = length;
     g_chart[free_index] = ++g_last_chart_nb;
 

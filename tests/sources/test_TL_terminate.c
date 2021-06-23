@@ -2,7 +2,7 @@
 
 extern int g_total_charts_allocated;
 extern TL_CHART *g_chart;
-extern TL_CHART_DATA **g_chart_data;
+extern TL_CHART_DATA *g_chart_data;
 extern unsigned int *g_chart_data_length;
 
 int test_TL_terminate(void)

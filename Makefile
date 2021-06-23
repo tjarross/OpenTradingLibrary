@@ -1,5 +1,6 @@
 LIB =		TL.a
-SRC =		sources/indicators/ma.c \
+SRC =		sources/indicators/ema.c \
+			sources/indicators/ma.c \
 			sources/indicators/sma.c \
 			sources/init.c \
 

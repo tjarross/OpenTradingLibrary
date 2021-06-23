@@ -38,11 +38,11 @@ typedef enum e_TL_DATA_TYPE
 
 typedef struct s_TL_CHART_DATA
 {
-    double open;
-    double high;
-    double low;
-    double close;
-    double volume;
+    double *open;
+    double *high;
+    double *low;
+    double *close;
+    double *volume;
 } TL_CHART_DATA;
 
 #endif
