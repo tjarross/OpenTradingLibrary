@@ -32,7 +32,7 @@ TL_STATUS TL_ema(TL_CHART chart, TL_OHLC ohlc_type, unsigned int period, unsigne
         output[i] = NAN;
 
     double weight = smoothing / (double)(1 + period);
-    TL_sma(ohlc_ptr, period, output + period - 1);
+    TL_average(ohlc_ptr, period, output + period - 1);
     for (unsigned int i = period; i < length; ++i)
         output[i] = (ohlc_ptr[i] * weight) + (output[i - 1] * (1 - weight));
     return (TL_SUCCESS);

@@ -1,6 +1,6 @@
 #include "TL.h"
 
-TL_STATUS TL_sma(const double *array, unsigned int length, double *output)
+TL_STATUS TL_average(const double *array, unsigned int length, double *output)
 {
     if (!array || !output)
         return (TL_E_NULL_POINTER);

@@ -4,7 +4,8 @@ A C library for your trading analysis
 
 ## Features
 
-* Moving Averages (SMA, MA, EMA)
+* Moving Average
+* Exponential Moving Average
 
 ## Usage
 
