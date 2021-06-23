@@ -15,6 +15,7 @@ Go to the cloned folder and compile the library:
 `$ make`
 
 This creates a static library called `TL.a`.
+
 Include the file `TL.h` to your source code.
 Link it with the static library generated before.
 
@@ -43,7 +44,7 @@ int main(void)
     TL_CHART chart;
 
     int data[] = {45, 12, 36, 75, 89, 0, 4, 8, 9, 50};
-    size_t data_length = 10;
+    unsigned int data_length = 10;
     unsigned int ma_period = 4;
 
     double *output = (double *)malloc(sizeof(double) * data_length);
@@ -70,7 +71,7 @@ int main(void)
     }
 
     printf("Moving Average of \'data\' is:");
-    for (int i = 0; i < data_length; ++i)
+    for (unsigned int i = 0; i < data_length; ++i)
         printf(" %.2lf", output[i]);
     printf("\n");
 
