@@ -1,13 +1,13 @@
 LIB =		TL.a
 SRC =		sources/indicators/ema.c \
 			sources/indicators/ma.c \
-			sources/indicators/sma.c \
+			sources/indicators/average.c \
 			sources/init.c \
 
 OBJ =		$(SRC:%.c=%.o)
 INC =		-I includes/
 CC =		gcc
-FLAGS =		-O3 -Wall -Wextra
+FLAGS =		-O3 -std=c99 -Wall -Wextra
 
 all: $(LIB)
 

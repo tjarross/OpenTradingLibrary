@@ -11,7 +11,7 @@ INC =		-I includes/ \
 			-I ../includes/ \
 
 CC =		gcc
-FLAGS =		-g -Wall -Wextra
+FLAGS =		-g -std=c99 -Wall -Wextra
 
 all: $(EXEC)
 
