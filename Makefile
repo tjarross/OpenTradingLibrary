@@ -1,7 +1,8 @@
 LIB =		TL.a
-SRC =		sources/indicators/ema.c \
+SRC =		sources/indicators/average.c \
+			sources/indicators/ema.c \
 			sources/indicators/ma.c \
-			sources/indicators/average.c \
+			sources/indicators/obv.c \
 			sources/init.c \
 
 OBJ =		$(SRC:%.c=%.o)

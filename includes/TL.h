@@ -32,5 +32,6 @@ void TL_terminate(void);
 TL_STATUS TL_ma(TL_CHART chart, TL_OHLC ohlc_type, unsigned int period, double *output);
 TL_STATUS TL_average(const double *array, unsigned int length, double *output);
 TL_STATUS TL_ema(TL_CHART chart, TL_OHLC ohlc_type, unsigned int period, unsigned int smoothing, double *output);
+TL_STATUS TL_obv(TL_CHART chart, TL_OHLC ohlc_type, double *output);
 
 #endif
