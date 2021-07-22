@@ -65,11 +65,13 @@ int main(void)
         {
             // Compute the Moving Average
             TL_ma(chart, TL_CLOSE, ma_period, output);
-
-            // Release chart
-            TL_release_chart(chart);
         }
+
+        // Release chart
+        TL_release_chart(chart);
     }
+    if (status != TL_SUCCESS)
+        return (EXIT_FAILURE);
 
     printf("Moving Average of \'data\' is:");
     for (unsigned int i = 0; i < data_length; ++i)
