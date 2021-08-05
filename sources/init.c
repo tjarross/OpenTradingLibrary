@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <strings.h>
 
 static int g_init = 0;
 static int g_last_chart_nb = 0;
@@ -30,11 +31,7 @@ static void realloc_charts(int new_length)
         for (int i = g_total_charts_allocated; i < new_length; ++i)
         {
             g_chart[i] = -1;
-            g_chart_data[i].open = NULL;
-            g_chart_data[i].high = NULL;
-            g_chart_data[i].low = NULL;
-            g_chart_data[i].close = NULL;
-            g_chart_data[i].volume = NULL;
+            bzero(g_chart_data + i, sizeof(*g_chart_data));
             g_chart_data_length[i] = 0;
         }
     }
@@ -106,11 +103,7 @@ TL_STATUS TL_init(void)
     for (int i = 0; i < g_total_charts_allocated; ++i)
     {
         g_chart[i] = -1;
-        g_chart_data[i].open = NULL;
-        g_chart_data[i].high = NULL;
-        g_chart_data[i].low = NULL;
-        g_chart_data[i].close = NULL;
-        g_chart_data[i].volume = NULL;
+        bzero(g_chart_data + i, sizeof(*g_chart_data));
         g_chart_data_length[i] = 0;
     }
 
