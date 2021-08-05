@@ -45,10 +45,10 @@ int main(void)
     TL_CHART chart;
 
     int data[] = {45, 12, 36, 75, 89, 0, 4, 8, 9, 50};
-    unsigned int data_length = 10;
+    const unsigned int data_length = 10;
     unsigned int ma_period = 4;
 
-    double *output = (double *)malloc(sizeof(double) * data_length);
+    double output[data_length];
 
     // Instantiate the library
     status = TL_init();
@@ -65,11 +65,13 @@ int main(void)
         {
             // Compute the Moving Average
             TL_ma(chart, TL_CLOSE, ma_period, output);
-
-            // Release chart
-            TL_release_chart(chart);
         }
+
+        // Release chart
+        TL_release_chart(chart);
     }
+    if (status != TL_SUCCESS)
+        return (EXIT_FAILURE);
 
     printf("Moving Average of \'data\' is:");
     for (unsigned int i = 0; i < data_length; ++i)
